@@ -1,0 +1,18 @@
+{
+  "name": "nu.js",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./js/index.js"
+  },
+  "scripts": {
+    "wasm": "cargo +nightly -Z unstable-options build --release --artifact-dir wasm"
+  },
+  "files": [
+    "js/**",
+    "wasm/**"
+  ],
+  "volta": {
+    "node": "22.12.0"
+  }
+}
