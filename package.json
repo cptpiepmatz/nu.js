@@ -6,7 +6,9 @@
     ".": "./js/index.js"
   },
   "scripts": {
-    "wasm": "cargo +nightly -Z unstable-options build --release --artifact-dir wasm"
+    "wasm": "cargo +nightly -Z unstable-options build --release --artifact-dir wasm",
+    "check": "deno check js",
+    "docs": "deno doc --html ./js/index.js"
   },
   "files": [
     "js/**",
