@@ -1,7 +1,5 @@
 target/
-wasm/
-docs/
-node_modules/
+pkg/
 
 package-lock.json
 *.tgz
