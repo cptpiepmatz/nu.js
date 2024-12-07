@@ -2,19 +2,20 @@
   "name": "nu.js",
   "version": "0.0.0",
   "type": "module",
+  "files": ["pkg"],
   "exports": {
-    ".": "./js/index.js"
+    ".": "./pkg/bundler/nu_js.js",
+    "./bundler": "./pkg/bundler/nu_js.js",
+    "./deno": "./pkg/deno/nu_js.js",
+    "./nodejs": "./pkg/nodejs/nu_js.js",
+    "./web": "./pkg/web/nu_js.js"
   },
   "scripts": {
-    "wasm": "cargo +nightly -Z unstable-options build --release --artifact-dir wasm",
-    "check": "deno check js",
-    "docs": "deno doc --html ./js/index.js"
-  },
-  "files": [
-    "js/**",
-    "wasm/**"
-  ],
-  "volta": {
-    "node": "22.12.0"
+    "build": "npm run build:bundler && npm run build:deno && npm run build:web && npm run build:nodejs",
+    "build:bundler": "wasm-pack build --target bundler --out-dir pkg/bundler",
+    "build:deno": "wasm-pack build --target deno --out-dir pkg/deno",
+    "build:web": "wasm-pack build --target web --out-dir pkg/web",
+    "build:nodejs": "wasm-pack build --target nodejs --out-dir pkg/nodejs",
+    "postbuild": "node scripts/postbuild.js"
   }
 }

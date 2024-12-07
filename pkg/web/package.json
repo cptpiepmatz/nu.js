@@ -1,0 +1,15 @@
+{
+  "name": "nu-js",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "nu_js_bg.wasm",
+    "nu_js.js",
+    "nu_js.d.ts"
+  ],
+  "main": "nu_js.js",
+  "types": "nu_js.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
