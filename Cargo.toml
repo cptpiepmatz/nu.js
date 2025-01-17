@@ -7,14 +7,14 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-nu-cmd-extra = { version = "0.100", default-features = false }
-nu-cmd-lang = { version = "0.100", default-features = false }
-nu-command = { version = "0.100", default-features = false }
-nu-engine = { version = "0.100", default-features = false }
-nu-parser = { version = "0.100", default-features = false }
-nu-protocol = { version = "0.100", default-features = false }
-nuon = { version = "0.100", default-features = false }
-wasm-bindgen = "0.2.98"
+nu-cmd-extra = { version = "0.101", default-features = false }
+nu-cmd-lang = { version = "0.101", default-features = false }
+nu-command = { version = "0.101", default-features = false }
+nu-engine = { version = "0.101", default-features = false }
+nu-parser = { version = "0.101", default-features = false }
+nu-protocol = { version = "0.101", default-features = false }
+nuon = { version = "0.101", default-features = false }
+wasm-bindgen = "0.2"
 
 [patch.crates-io]
 nu-cmd-extra = { git = "https://github.com/nushell/nushell.git" }
