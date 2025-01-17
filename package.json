@@ -2,7 +2,9 @@
   "name": "nu.js",
   "version": "0.0.0",
   "type": "module",
-  "files": ["pkg"],
+  "files": [
+    "pkg"
+  ],
   "exports": {
     ".": "./pkg/bundler/nu_js.js",
     "./bundler": "./pkg/bundler/nu_js.js",
@@ -11,11 +13,20 @@
     "./web": "./pkg/web/nu_js.js"
   },
   "scripts": {
-    "build": "npm run build:bundler && npm run build:deno && npm run build:web && npm run build:nodejs",
+    "dev": "run-s dev:*",
+    "dev:bundler": "wasm-pack build --target bundler --out-dir pkg/bundler --dev",
+    "dev:deno": "wasm-pack build --target deno --out-dir pkg/deno --dev",
+    "dev:web": "wasm-pack build --target web --out-dir pkg/web --dev",
+    "dev:nodejs": "wasm-pack build --target nodejs --out-dir pkg/nodejs --dev",
+    "postdev": "npm run postbuild",
+    "build": "run-s build:*",
     "build:bundler": "wasm-pack build --target bundler --out-dir pkg/bundler",
     "build:deno": "wasm-pack build --target deno --out-dir pkg/deno",
     "build:web": "wasm-pack build --target web --out-dir pkg/web",
     "build:nodejs": "wasm-pack build --target nodejs --out-dir pkg/nodejs",
     "postbuild": "node scripts/postbuild.js"
+  },
+  "devDependencies": {
+    "npm-run-all2": "^7.0.2"
   }
 }
