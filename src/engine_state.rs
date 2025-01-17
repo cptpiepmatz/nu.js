@@ -1,9 +1,7 @@
 use std::ops::{Deref, DerefMut};
-use indoc::indoc;
 use tsify_next::Tsify;
 use serde::{Serialize, Deserialize};
-use wasm_bindgen::{convert::TryFromJsValue, prelude::*};
-use log::*;
+use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 pub struct EngineState {
