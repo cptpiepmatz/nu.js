@@ -7,22 +7,32 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-chrono = "0.4.39"
-nu-cmd-extra = { version = "0.101", default-features = false }
-nu-cmd-lang = { version = "0.101", default-features = false }
-nu-command = { version = "0.101", default-features = false }
-nu-engine = { version = "0.101", default-features = false }
-nu-parser = { version = "0.101", default-features = false }
-nu-protocol = { version = "0.101", default-features = false }
-nuon = { version = "0.101", default-features = false }
-wasm-bindgen = "0.2"
-serde-wasm-bindgen = "0.6"
-js-sys = "0.3"
-console_error_panic_hook = "0.1"
-console_log = "1"
-log = "0.4"
-serde = {version = "1", features = ["derive"]}
-tsify-next = {version="0.5.4", features = ["js"]}
+# Time handling
+chrono = "0.4.39"                # Library for date and time handling
+
+# Nushell-related dependencies
+nu-cmd-extra = { version = "0.101", default-features = false }  # Extra commands for Nushell
+nu-cmd-lang = { version = "0.101", default-features = false }   # Language-specific commands for Nushell
+nu-command = { version = "0.101", default-features = false }    # Core Nushell commands
+nu-engine = { version = "0.101", default-features = false }     # Core execution engine for Nushell
+nu-parser = { version = "0.101", default-features = false }     # Parser for Nushell scripts
+nu-protocol = { version = "0.101", default-features = false }   # Protocol definitions for Nushell
+nuon = { version = "0.101", default-features = false }          # Data format for Nushell
+
+# WebAssembly and JS bindings
+wasm-bindgen = "0.2"              # Facilitates Rust <-> JS interoperability
+serde-wasm-bindgen = "0.6"        # Serde support for wasm-bindgen
+js-sys = "0.3"                    # Low-level bindings to JS types
+console_error_panic_hook = "0.1"  # Better error messages in Wasm
+console_log = "1"                 # Console logging support for Wasm
+tsify-next = { version = "0.5.4", features = ["js"] }  # TypeScript type definitions for Rust structs
+
+# Logging
+log = "0.4"                       # Logging facade for Rust
+
+# Serialization and Deserialization
+serde = { version = "1", features = ["derive"] }  # Serialization framework with derive support
+
 
 [patch.crates-io]
 nu-cmd-extra = { git = "https://github.com/nushell/nushell.git" }
