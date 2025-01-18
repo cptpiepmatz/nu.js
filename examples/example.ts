@@ -1,4 +1,3 @@
-// @ts-types="../pkg/deno/nu_js.d.ts"
 import { EngineState, Stack, Value } from "../pkg/deno/nu_js.js";
 
 let engineState = new EngineState();
