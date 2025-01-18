@@ -1,173 +1,63 @@
 use chrono::{DateTime, Utc};
+use nu_protocol::Record;
+use serde::{Deserialize, Serialize};
+use tsify_next::Tsify;
 use wasm_bindgen::prelude::*;
-use nu_protocol::Value as NuValue;
 
-#[wasm_bindgen(inspectable, getter_with_clone)]
-#[derive(Debug, Clone)]
-pub struct Value {
-    pub kind: ValueKind,
-    pub value: JsValue,
-    pub span: Span,
+#[derive(Debug, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
+#[serde(rename_all = "camelCase", tag = "type", content = "value")]
+pub enum Value {
+    Bool(bool),
+    Int(i64),
+    Float(f64),
+    String(String),
+    Filesize(i64),
+    Duration(i64),
+    #[serde(with = "serde_wasm_bindgen::preserve")]
+    Date(js_sys::Date),
+    #[serde(with = "serde_wasm_bindgen::preserve")]
+    Record(js_sys::Object),
+    List(Vec<Value>),
+    #[serde(with = "serde_wasm_bindgen::preserve")]
+    Binary(js_sys::Uint8Array),
+    Nothing,
+    Unsupported, // Glob, Range, Closure, Error, CellPath, Custom
 }
 
-#[wasm_bindgen(js_class = Value)]
-impl Value {
-    #[wasm_bindgen]
-    pub fn some_string() -> Value {
-        Value {
-            kind: ValueKind::String,
-            value: "lol".into(),
-            span: Span {
-                start: 0,
-                end: 3,
-            }
-        }
-    }
-}
-
-#[wasm_bindgen]
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ValueKind {
-    Bool = "bool",
-    Int = "int",
-    Float = "float",
-    String = "string",
-    Glob = "glob",
-    Filesize = "filesize",
-    Duration = "duration",
-    Date = "date",
-    Range = "range",
-    Record = "record",
-    List = "list",
-    Closure = "closure",
-    Error = "error",
-    Binary = "binary",
-    CellPath = "cell path",
-    Custom = "custom",
-    Nothing = "nothing",
-}
-
-#[wasm_bindgen(inspectable)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-pub struct Span {
-    pub start: usize,
-    pub end: usize,
-}
-
-impl From<nu_protocol::Span> for Span {
-    fn from(value: nu_protocol::Span) -> Self {
-        Span {
-            start: value.start,
-            end: value.end,
-        }
-    }
-}
-
-impl From<NuValue> for Value {
-    fn from(value: NuValue) -> Self {
+impl From<nu_protocol::Value> for Value {
+    fn from(value: nu_protocol::Value) -> Self {
+        use nu_protocol::Value as NuValue;
         match value {
-            NuValue::Bool { val, internal_span } => 
-                Value::from_value_bool(val, internal_span),
-
-            NuValue::Int { val, internal_span } => 
-                Value::from_value_int(val, internal_span),
-
-            NuValue::Float { val, internal_span } => 
-                Value::from_value_float(val, internal_span),
-
-            NuValue::String { val, internal_span } => 
-                Value::from_value_string(val, internal_span),
-
-            NuValue::Filesize { val, internal_span } => 
-                Value::from_value_filesize(val, internal_span),
-
-            NuValue::Duration { val, internal_span } => 
-                Value::from_value_duration(val, internal_span),
-
-            NuValue::Date { val, internal_span } => 
-                Value::from_value_date(val, internal_span),
-
-            NuValue::List { vals, internal_span } => 
-                Value::from_value_list(vals.into_iter().map(Into::into).collect(), internal_span),
-
-            _ => todo!("Handle other NuValue variants"),
+            NuValue::Bool { val, .. } => Value::Bool(val),
+            NuValue::Int { val, .. } => Value::Int(val),
+            NuValue::Float { val, .. } => Value::Float(val),
+            NuValue::String { val, .. } => Value::String(val),
+            NuValue::Glob { .. } => Value::Unsupported,
+            NuValue::Filesize { val, .. } => Value::Filesize(val.get()),
+            NuValue::Duration { val, .. } => Value::Duration(val),
+            NuValue::Date { val, .. } => Value::Date(DateTime::from(val).into()),
+            NuValue::Range { .. } => Value::Unsupported,
+            NuValue::Record { val, .. } => Value::from_record(val.into_owned()),
+            NuValue::List { vals, .. } => Value::List(vals.into_iter().map(Into::into).collect()),
+            NuValue::Closure { .. } => Value::Unsupported,
+            NuValue::Error { .. } => Value::Unsupported,
+            NuValue::Binary { val, .. } => Value::Binary(val.as_slice().into()),
+            NuValue::CellPath { .. } => Value::Unsupported,
+            NuValue::Custom { .. } => Value::Unsupported,
+            NuValue::Nothing { .. } => Value::Nothing,
         }
     }
 }
 
 impl Value {
-    #[inline]
-    fn from_value_bool(val: bool, span: nu_protocol::Span) -> Value {
-        Value {
-            kind: ValueKind::Bool,
-            value: val.into(),
-            span: span.into(),
-        }
-    }
-
-    #[inline]
-    fn from_value_int(val: i64, span: nu_protocol::Span) -> Value {
-        Value {
-            kind: ValueKind::Int,
-            value: val.into(),
-            span: span.into(),
-        }
-    }
-
-    #[inline]
-    fn from_value_float(val: f64, span: nu_protocol::Span) -> Value {
-        Value {
-            kind: ValueKind::Float,
-            value: val.into(),
-            span: span.into(),
-        }
-    }
-
-    #[inline]
-    fn from_value_string(val: String, span: nu_protocol::Span) -> Value {
-        Value {
-            kind: ValueKind::String,
-            value: val.into(),
-            span: span.into(),
-        }
-    }
-
-    #[inline]
-    fn from_value_filesize(val: nu_protocol::Filesize, span: nu_protocol::Span) -> Value {
-        Value {
-            kind: ValueKind::Filesize,
-            value: val.get().into(),
-            span: span.into(),
-        }
-    }
-
-    #[inline]
-    fn from_value_duration(val: i64, span: nu_protocol::Span) -> Value {
-        Value {
-            kind: ValueKind::Duration,
-            value: val.into(),
-            span: span.into(),
-        }
-    }
-
-    #[inline]
-    fn from_value_date(val: chrono::DateTime<chrono::FixedOffset>, span: nu_protocol::Span) -> Value {
-        let date = DateTime::<Utc>::from(val);
-        let date = js_sys::Date::from(date);
-        let date = JsValue::from(date);
-        Value {
-            kind: ValueKind::Date,
-            value: date,
-            span: span.into(),
-        }
-    }
-
-    #[inline]
-    fn from_value_list(vals: Vec<Value>, span: nu_protocol::Span) -> Value {
-        Value {
-            kind: ValueKind::List,
-            value: vals.into(),
-            span: span.into(),
-        }
+    fn from_record(record: Record) -> Value {
+        let entries: Vec<_> = record.into_iter().map(|(key, value)| JsValue::from(vec![
+            JsValue::from(key),
+            JsValue::from(Value::from(value)),
+        ])).collect();
+        let entries = JsValue::from(entries);
+        let record = js_sys::Object::from_entries(&entries).unwrap();
+        Value::Record(record)
     }
 }
