@@ -33,7 +33,6 @@ log = "0.4"                       # Logging facade for Rust
 # Serialization and Deserialization
 serde = { version = "1", features = ["derive"] }  # Serialization framework with derive support
 
-
 [patch.crates-io]
 nu-cmd-extra = { git = "https://github.com/nushell/nushell.git" }
 nu-cmd-lang = { git = "https://github.com/nushell/nushell.git" }

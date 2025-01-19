@@ -61,3 +61,12 @@ impl Value {
         Value::Record(record)
     }
 }
+
+// #[wasm_bindgen]
+// extern "C" {
+//     #[wasm_bindgen(extends = js_sys::Error, js_name = TryFromValueError)]
+//     pub type TryFromValueError;
+
+//     #[wasm_bindgen(constructor)]
+//     fn new(message: &str) -> TryFromValueError;
+// }
