@@ -21,7 +21,7 @@
     "build:bundler:replace-placeholders": "node scripts/replace_placeholders.js bundler",
     "build:deno": "run-s build:deno:*",
     "build:deno:wasm": "wasm-pack build --target deno --out-dir pkg/deno --dev",
-    "build:deno:provide-self-types": "node scripts/provide_deno_self_types.js --dev",
+    "build:deno:provide-self-types": "cargo run --bin provide-deno-self-types",
     "build:deno:remove-gitignore": "rimraf pkg/deno/.gitignore",
     "build:deno:replace-placeholders": "node scripts/replace_placeholders.js deno",
     "build:nodejs": "run-s build:nodejs:*",

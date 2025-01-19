@@ -6,6 +6,10 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib"]
 
+[[bin]]
+name = "provide-deno-self-types"
+path = "scripts/provide_deno_self_types.rs"
+
 [dependencies]
 # Time handling
 chrono = "0.4.39"                # Library for date and time handling
