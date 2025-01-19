@@ -3,7 +3,7 @@ import fs from "node:fs";
 
 let path, replacer, replacement;
 
-const esmReplacement = "export { TryFromValueError };";
+const esmReplacement = "export { TryFromValueError, UnsupportedValueError };";
 
 const arg = process.argv[2]
 switch (arg) {
@@ -34,7 +34,10 @@ switch (arg) {
           wasm.__nu_js__error__placeholder();
       };
     `;
-    replacement = "module.exports.TryFromValueError = TryFromValueError;";
+    replacement = [
+      "module.exports.TryFromValueError = TryFromValueError;",
+      "module.exports.UnsupportedValueError = UnsupportedValueError;"
+    ].join("\n");
     break;
   case "web":
     path = "pkg/web/nu_js.js";

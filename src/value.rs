@@ -1,8 +1,10 @@
-use chrono::{DateTime, Utc};
-use nu_protocol::Record;
+use chrono::DateTime;
+use nu_protocol::{Record, Value as NuValue};
 use serde::{Deserialize, Serialize};
 use tsify_next::Tsify;
 use wasm_bindgen::prelude::*;
+
+use crate::{NuJsError, UnsupportedValueError};
 
 #[derive(Debug, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
@@ -25,9 +27,8 @@ pub enum Value {
     Unsupported, // Glob, Range, Closure, Error, CellPath, Custom
 }
 
-impl From<nu_protocol::Value> for Value {
-    fn from(value: nu_protocol::Value) -> Self {
-        use nu_protocol::Value as NuValue;
+impl From<NuValue> for Value {
+    fn from(value: NuValue) -> Self {
         match value {
             NuValue::Bool { val, .. } => Value::Bool(val),
             NuValue::Int { val, .. } => Value::Int(val),
@@ -62,11 +63,24 @@ impl Value {
     }
 }
 
-// #[wasm_bindgen]
-// extern "C" {
-//     #[wasm_bindgen(extends = js_sys::Error, js_name = TryFromValueError)]
-//     pub type TryFromValueError;
+impl TryFrom<Value> for NuValue {
+    type Error = UnsupportedValueError;
 
-//     #[wasm_bindgen(constructor)]
-//     fn new(message: &str) -> TryFromValueError;
-// }
+    fn try_from(value: Value) -> Result<Self, UnsupportedValueError> {
+        let span = nu_protocol::Span::unknown();
+        Ok(match value {
+            Value::Bool(val) => NuValue::bool(val, span),
+            Value::Int(val) => NuValue::int(val, span),
+            Value::Float(val) => NuValue::float(val, span),
+            Value::String(val) => NuValue::string(val, span),
+            Value::Filesize(val) => NuValue::filesize(val, span),
+            Value::Duration(val) => NuValue::duration(val, span),
+            Value::Date(val) => NuValue::date(DateTime::from(val).into(), span),
+            Value::Record(_) => todo!(),
+            Value::List(_) => todo!(),
+            Value::Binary(_) => todo!(),
+            Value::Nothing => NuValue::nothing(span),
+            Value::Unsupported => return Err(UnsupportedValueError::new("stuff".to_string())),
+        })
+    }
+}

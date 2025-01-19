@@ -1,18 +1,25 @@
-import { EngineState, Stack, Value, yeet, TryFromValueError} from "../pkg/deno/nu_js.js";
+import { EngineState, Stack, TryFromValueError, UnsupportedValueError, execute} from "../pkg/deno/nu_js.js";
 
-// let engineState = new EngineState();
-// console.log({
-//   engineState
-// });
+const engineState = new EngineState();
+const stack = new Stack();
 
-const error = new TryFromValueError("some message", {});
-console.log(error);
-console.log(error instanceof TryFromValueError);
-console.log(error instanceof Error);
+try {
+  execute("", engineState, stack, {
+    input: {type: "bool", value: "lol"} as any,
+  });
+}
+catch (e) {
+  if (e instanceof TryFromValueError) console.log("TryFromValueError catched");
+  else console.log("TryFromValueError not catched");
+}
 
-console.log(yeet() instanceof TryFromValueError);
+try {
+  execute("", engineState, stack, {
+    input: {type: "unsupported"},
+  });
+}
+catch (e) {
+  if (e instanceof UnsupportedValueError) console.log("UnsupportedValueError catched");
+  else console.log("UnsupportedValueError not catched");
+}
 
-// console.log(new EngineState());
-// console.log(new Stack());
-// console.log(Value.some_string().toString());
-// console.log(Value.some_string().toJSON());
