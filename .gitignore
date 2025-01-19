@@ -1,7 +1,7 @@
 # Build output and dependencies
 target/
 pkg/
-types/
+js/
 *.tgz
 
 # Node.js specific
