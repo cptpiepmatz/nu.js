@@ -1,6 +1,8 @@
+use std::ops::DerefMut;
+
 use console_error_panic_hook;
 use log::*;
-use nu_protocol::{engine::StateWorkingSet, Value as NuValue};
+use nu_protocol::{debugger::WithoutDebug, engine::StateWorkingSet, PipelineData, Span, Value as NuValue};
 use serde::{Deserialize, Serialize};
 use tsify_next::Tsify;
 use wasm_bindgen::prelude::*;
@@ -52,12 +54,10 @@ pub fn execute(
     };
 
     let span = nu_protocol::Span::unknown();
-    let input: NuValue = match options.input {
-        None => NuValue::nothing(span),
-        Some(input) => NuValue::try_from(input)?,
-    };
+    let input = options.input.map(|input| NuValue::try_from(input)).transpose()?;
 
     let code = code.as_bytes();
+    let engine_state = engine_state.deref_mut();
     let mut working_set = StateWorkingSet::new(engine_state);
     let name = options.name.as_ref().map(|name| name.as_str());
     let block = nu_parser::parse(&mut working_set, name, code, false);
@@ -72,9 +72,20 @@ pub fn execute(
         return Err(CompileError::new(error.to_string()).into());
     }
 
-    debug!("{input:?}");
+    if options.merge_delta.unwrap_or(false) {
+        // TODO: make this a proper error type
+        engine_state.merge_delta(working_set.delta).unwrap();
+    }
 
-    todo!()
+    let input = match input {
+        None => PipelineData::Empty,
+        Some(input) => PipelineData::Value(input, None)
+    };
+
+    // TODO: make these proper error types
+    let res = nu_engine::eval_block::<WithoutDebug>(engine_state, stack, &block, input).unwrap();
+    let res = res.into_value(Span::unknown()).unwrap();
+    Ok(res.into())
 }
 
 #[wasm_bindgen]
