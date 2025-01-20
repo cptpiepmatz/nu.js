@@ -1,6 +1,6 @@
 [package]
-name = "nu-js"
-version = "0.1.0"
+name = "nu-js"     # name is pulled from package.json
+version = "0.1.0"  # will be package version
 edition = "2021"
 
 [lib]

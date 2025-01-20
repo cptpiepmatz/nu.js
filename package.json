@@ -1,6 +1,5 @@
 {
   "name": "nu.js",
-  "version": "0.0.0",
   "type": "module",
   "files": [
     "pkg"
