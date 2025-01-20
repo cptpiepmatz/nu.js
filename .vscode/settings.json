@@ -1,7 +1,7 @@
 {
   "rust-analyzer.cargo.target": "wasm32-unknown-unknown",
   "rust-analyzer.cargo.allTargets": true,
-  "rust-analyzer.cargo.features": ["scripts"],
+  "rust-analyzer.checkOnSave": true,
   "deno.enable": true,
   "cSpell.language": "en",
   "cSpell.words": [
