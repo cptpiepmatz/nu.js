@@ -34,8 +34,6 @@
     "build:web:replace-placeholders": "cargo run --bin replace-reexports web"
   },
   "devDependencies": {
-    "@swc/cli": "^0.6.0",
-    "@swc/core": "^1.10.7",
     "copyfiles": "^2.4.1",
     "npm-run-all2": "^7.0.2",
     "rimraf": "^6.0.1",
