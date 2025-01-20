@@ -1,8 +1,19 @@
 {
   "rust-analyzer.cargo.target": "wasm32-unknown-unknown",
+  "rust-analyzer.cargo.allTargets": true,
+  "rust-analyzer.cargo.features": ["scripts"],
   "deno.enable": true,
+  "cSpell.language": "en",
   "cSpell.words": [
+    "bindgen",
+    "cdylib",
+    "Deindent",
     "Filesize",
+    "indoc",
+    "itertools",
+    "nuon",
+    "Nushell",
+    "serde",
     "Tsify"
   ]
 }

@@ -1,0 +1,5 @@
+classes:
+  - NuJsError
+  - TryFromValueError
+  - UnsupportedValueError
+  

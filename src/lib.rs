@@ -36,6 +36,7 @@ pub struct ExecuteOptions {
 #[allow(unused)]
 /// Some docs.
 /// 
+/// @throws {TryFromValueError} - Thrown if the passed input type does not adhere to {@link Value}'s definition.
 /// @throws {NuJsError}
 #[wasm_bindgen]
 pub fn execute(
@@ -63,7 +64,14 @@ pub fn execute(
 }
 
 #[wasm_bindgen]
-pub fn yeet() -> TryFromValueError {
-    let error = error::TryFromValueError::new("wow".to_string(), js_sys::Object::new());
+pub fn yeet() -> NuJsError {
+    let error = error::NuJsError::new("wow".to_string());
     error
+}
+
+mod placeholder {
+    use wasm_bindgen::prelude::*;
+
+    #[wasm_bindgen(skip_typescript, js_name = "__nu_js__reexport__placeholder")]
+    pub fn placeholder() {}
 }

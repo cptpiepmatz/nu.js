@@ -5,6 +5,9 @@ extern "C" {
     #[wasm_bindgen(extends = js_sys::Error)]
     pub type NuJsError;
 
+    #[wasm_bindgen(constructor)]
+    pub fn new(message: String) -> NuJsError;
+
     #[wasm_bindgen(extends = NuJsError, extends = js_sys::Error)]
     pub type TryFromValueError;
 
@@ -20,10 +23,3 @@ extern "C" {
 
 #[wasm_bindgen(typescript_custom_section)]
 const ERROR_TYPES: &'static str = include_str!("../js/error.d.ts");
-
-mod placeholder {
-    use wasm_bindgen::prelude::*;
-
-    #[wasm_bindgen(skip_typescript, js_name = "__nu_js__error__placeholder")]
-    pub fn placeholder() {}
-}
