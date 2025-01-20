@@ -2,4 +2,6 @@ classes:
   - NuJsError
   - TryFromValueError
   - UnsupportedValueError
+  - ParseError
+  - CompileError
   

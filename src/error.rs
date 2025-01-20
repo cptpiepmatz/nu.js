@@ -4,21 +4,28 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     #[wasm_bindgen(extends = js_sys::Error)]
     pub type NuJsError;
-
     #[wasm_bindgen(constructor)]
     pub fn new(message: String) -> NuJsError;
 
     #[wasm_bindgen(extends = NuJsError, extends = js_sys::Error)]
     pub type TryFromValueError;
-
     #[wasm_bindgen(constructor)]
     pub fn new(message: String, value: js_sys::Object) -> TryFromValueError;
 
     #[wasm_bindgen(extends = NuJsError, extends = js_sys::Error)]
     pub type UnsupportedValueError;
-
     #[wasm_bindgen(constructor)]
     pub fn new(message: String) -> UnsupportedValueError;
+
+    #[wasm_bindgen(extends = NuJsError, extends = js_sys::Error)]
+    pub type ParseError;
+    #[wasm_bindgen(constructor)]
+    pub fn new(message: String) -> ParseError;
+
+    #[wasm_bindgen(extends = NuJsError, extends = js_sys::Error)]
+    pub type CompileError;
+    #[wasm_bindgen(constructor)]
+    pub fn new(message: String) -> CompileError;
 }
 
 #[wasm_bindgen(typescript_custom_section)]

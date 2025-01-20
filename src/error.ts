@@ -7,3 +7,5 @@ export class TryFromValueError extends NuJsError {
 }
 
 export class UnsupportedValueError extends NuJsError {}
+export class ParseError extends NuJsError {}
+export class CompileError extends NuJsError {}

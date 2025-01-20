@@ -1,6 +1,6 @@
 use console_error_panic_hook;
 use log::*;
-use nu_protocol::Value as NuValue;
+use nu_protocol::{engine::StateWorkingSet, Value as NuValue};
 use serde::{Deserialize, Serialize};
 use tsify_next::Tsify;
 use wasm_bindgen::prelude::*;
@@ -43,11 +43,11 @@ pub fn execute(
     code: &str,
     #[wasm_bindgen(js_name = "engineState")] engine_state: &mut EngineState,
     stack: &mut Stack,
-    #[wasm_bindgen(unchecked_param_type = "ExecuteOptions | undefined")] options: JsValue,
+    #[wasm_bindgen(unchecked_param_type = "ExecuteOptions | undefined")] options: Option<js_sys::Object>,
 ) -> Result<Value, NuJsError> {
-    let options = match options.is_undefined() {
-        true => ExecuteOptions::default(),
-        false => ExecuteOptions::from_js(options)
+    let options = match options {
+        None => ExecuteOptions::default(),
+        Some(options) => ExecuteOptions::from_js(options)
             .map_err(|_| TryFromValueError::new("dunno".to_string(), js_sys::Object::new()))?,
     };
 
@@ -56,6 +56,21 @@ pub fn execute(
         None => NuValue::nothing(span),
         Some(input) => NuValue::try_from(input)?,
     };
+
+    let code = code.as_bytes();
+    let mut working_set = StateWorkingSet::new(engine_state);
+    let name = options.name.as_ref().map(|name| name.as_str());
+    let block = nu_parser::parse(&mut working_set, name, code, false);
+
+    // TODO: report parse warnings
+
+    if let Some(error) = working_set.parse_errors.into_iter().next() {
+        return Err(ParseError::new(error.to_string()).into());
+    }
+
+    if let Some(error) = working_set.compile_errors.into_iter().next() {
+        return Err(CompileError::new(error.to_string()).into());
+    }
 
     debug!("{input:?}");
 
