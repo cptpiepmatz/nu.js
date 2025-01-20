@@ -2,7 +2,9 @@ use std::ops::DerefMut;
 
 use console_error_panic_hook;
 use log::*;
-use nu_protocol::{debugger::WithoutDebug, engine::StateWorkingSet, PipelineData, Span, Value as NuValue};
+use nu_protocol::{
+    debugger::WithoutDebug, engine::StateWorkingSet, PipelineData, Span, Value as NuValue,
+};
 use serde::{Deserialize, Serialize};
 use tsify_next::Tsify;
 use wasm_bindgen::prelude::*;
@@ -45,7 +47,9 @@ pub fn execute(
     code: &str,
     #[wasm_bindgen(js_name = "engineState")] engine_state: &mut EngineState,
     stack: &mut Stack,
-    #[wasm_bindgen(unchecked_param_type = "ExecuteOptions | undefined")] options: Option<js_sys::Object>,
+    #[wasm_bindgen(unchecked_param_type = "ExecuteOptions | undefined")] options: Option<
+        js_sys::Object,
+    >,
 ) -> Result<Value, NuJsError> {
     let options = match options {
         None => ExecuteOptions::default(),
@@ -54,7 +58,10 @@ pub fn execute(
     };
 
     let span = nu_protocol::Span::unknown();
-    let input = options.input.map(|input| NuValue::try_from(input)).transpose()?;
+    let input = options
+        .input
+        .map(|input| NuValue::try_from(input))
+        .transpose()?;
 
     let code = code.as_bytes();
     let engine_state = engine_state.deref_mut();

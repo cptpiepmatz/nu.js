@@ -1,5 +1,5 @@
-use std::{env, path::PathBuf, fs};
 use serde_json::Value;
+use std::{env, fs, path::PathBuf};
 
 const MAIN_PACKAGE: &'static str = include_str!("../package.json");
 
@@ -11,7 +11,10 @@ fn main() {
         "deno" => panic!("deno doesn't have a package.json"),
         "nodejs" => "pkg/nodejs/package.json",
         "web" => "pkg/web/package.json",
-        got => panic!("got {got:?}, expected {:?}, {:?} or {:?}", "bundler", "nodejs", "web")
+        got => panic!(
+            "got {got:?}, expected {:?}, {:?} or {:?}",
+            "bundler", "nodejs", "web"
+        ),
     });
 
     let main_package: Value = serde_json::from_str(MAIN_PACKAGE).unwrap();
