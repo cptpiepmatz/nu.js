@@ -26,6 +26,21 @@ extern "C" {
     pub type CompileError;
     #[wasm_bindgen(constructor)]
     pub fn new(message: String) -> CompileError;
+
+    #[wasm_bindgen(extends = NuJsError, extends = js_sys::Error)]
+    pub type MergeDeltaError;
+    #[wasm_bindgen(constructor)]
+    pub fn new(message: String) -> MergeDeltaError;
+
+    #[wasm_bindgen(extends = NuJsError, extends = js_sys::Error)]
+    pub type EvalError;
+    #[wasm_bindgen(constructor)]
+    pub fn new(message: String) -> EvalError;
+
+    #[wasm_bindgen(extends = NuJsError, extends = js_sys::Error)]
+    pub type CollectResultsError;
+    #[wasm_bindgen(constructor)]
+    pub fn new(message: String) -> CollectResultsError;
 }
 
 #[wasm_bindgen(typescript_custom_section)]

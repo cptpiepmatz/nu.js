@@ -80,18 +80,21 @@ pub fn execute(
     }
 
     if options.merge_delta.unwrap_or(false) {
-        // TODO: make this a proper error type
-        engine_state.merge_delta(working_set.delta).unwrap();
+        engine_state
+            .merge_delta(working_set.delta)
+            .map_err(|e| MergeDeltaError::new(e.to_string()))?;
     }
 
     let input = match input {
         None => PipelineData::Empty,
-        Some(input) => PipelineData::Value(input, None)
+        Some(input) => PipelineData::Value(input, None),
     };
 
-    // TODO: make these proper error types
-    let res = nu_engine::eval_block::<WithoutDebug>(engine_state, stack, &block, input).unwrap();
-    let res = res.into_value(Span::unknown()).unwrap();
+    let res = nu_engine::eval_block::<WithoutDebug>(engine_state, stack, &block, input)
+        .map_err(|e| EvalError::new(e.to_string()))?;
+    let res = res
+        .into_value(Span::unknown())
+        .map_err(|e| CollectResultsError::new(e.to_string()))?;
     Ok(res.into())
 }
 

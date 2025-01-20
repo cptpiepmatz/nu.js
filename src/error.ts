@@ -9,3 +9,6 @@ export class TryFromValueError extends NuJsError {
 export class UnsupportedValueError extends NuJsError {}
 export class ParseError extends NuJsError {}
 export class CompileError extends NuJsError {}
+export class MergeDeltaError extends NuJsError {}
+export class EvalError extends NuJsError {}
+export class CollectResultsError extends NuJsError {}
