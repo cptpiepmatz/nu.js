@@ -79,7 +79,12 @@ impl TryFrom<Value> for NuValue {
             Value::Duration(val) => NuValue::duration(val, span),
             Value::Date(val) => todo!(),
             Value::Record(_) => todo!(),
-            Value::List(_) => todo!(),
+            Value::List(vals) => NuValue::list(
+                vals.into_iter()
+                    .map(|val| NuValue::try_from(val))
+                    .collect::<Result<Vec<_>, _>>()?,
+                span,
+            ),
             Value::Binary(_) => todo!(),
             Value::Nothing => NuValue::nothing(span),
             Value::Unsupported => return Err(UnsupportedValueError::new("stuff".to_string())),
