@@ -14,6 +14,10 @@ path = "scripts/provide_deno_self_types.rs"
 name = "replace-reexports"
 path = "scripts/replace_reexports.rs"
 
+[[bin]]
+name = "update-package-name"
+path = "scripts/update_package_name.rs"
+
 [dependencies]
 # Time handling
 chrono = "0.4.39"                # Library for date and time handling
@@ -40,7 +44,8 @@ log = "0.4"                       # Logging facade for Rust
 
 # Serialization and Deserialization
 serde = { version = "1", features = ["derive"] }  # Serialization framework with derive support
-serde_yml = "0.0.12"                              # Se-/Deserialize yml files
+serde_yml = "0.0.12"                              # Ser-/Deserialize yml files
+serde_json = "1"                                  # Ser-/Deserialize json files
 
 # Rust utilities
 itertools = "0.14"  # Extend Iterator trait with useful methods

@@ -13,12 +13,14 @@
     "./web": "./pkg/web/nu_js.js"
   },
   "scripts": {
+    "doc": "run-s build:* && rimraf docs && typedoc",
     "build": "run-s build:*",
     "build:tsc": "tsc",
     "build:bundler": "run-s build:bundler:*",
     "build:bundler:wasm": "wasm-pack build --target bundler --out-dir pkg/bundler --dev",
     "build:bundler:remove-gitignore": "rimraf pkg/bundler/.gitignore",
     "build:bundler:replace-placeholders": "cargo run --bin replace-reexports bundler",
+    "build:bundler:update-package-name": "cargo run --bin update-package-name bundler",
     "build:deno": "run-s build:deno:*",
     "build:deno:wasm": "wasm-pack build --target deno --out-dir pkg/deno --dev",
     "build:deno:provide-self-types": "cargo run --bin provide-deno-self-types",
@@ -28,14 +30,14 @@
     "build:nodejs:wasm": "wasm-pack build --target nodejs --out-dir pkg/nodejs --dev",
     "build:nodejs:remove-gitignore": "rimraf pkg/nodejs/.gitignore",
     "build:nodejs:replace-placeholders": "cargo run --bin replace-reexports nodejs",
+    "build:nodejs:update-package-name": "cargo run --bin update-package-name nodejs",
     "build:web": "run-s build:web:*",
     "build:web:wasm": "wasm-pack build --target web --out-dir pkg/web --dev",
     "build:web:remove-gitignore": "rimraf pkg/web/.gitignore",
     "build:web:replace-placeholders": "cargo run --bin replace-reexports web",
-    "doc": "run-s build:tsc build:bundler && rimraf docs && typedoc"
+    "build:web:update-package-name": "cargo run --bin update-package-name web"
   },
   "devDependencies": {
-    "copyfiles": "^2.4.1",
     "npm-run-all2": "^7.0.2",
     "rimraf": "^6.0.1",
     "typedoc": "^0.27.6",
