@@ -47,3 +47,7 @@ try {
     console.log(e.message);
   } else console.log("CompileError not catched");
 }
+
+let version = execute("version", engineState, stack, {});
+if (version.type != "record") throw new Error("expected a record");
+console.log(version.value);
