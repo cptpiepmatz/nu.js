@@ -11,7 +11,7 @@ struct Reexports {
 mod esm {
     use indoc::indoc;
 
-    #[fmt::skip]
+    #[rustfmt::skip]
     pub const REPLACER: &'static str = indoc!(r#"
         export function __nu_js__reexport__placeholder() {
             wasm.__nu_js__reexport__placeholder();
@@ -29,7 +29,7 @@ mod esm {
 mod commonjs {
     use indoc::indoc;
 
-    #[fmt::skip]
+    #[rustfmt::skip]
     pub const REPLACER: &'static str = indoc!(r#"
         module.exports.__nu_js__reexport__placeholder = function() {
             wasm.__nu_js__reexport__placeholder();
