@@ -31,12 +31,14 @@
     "build:web": "run-s build:web:*",
     "build:web:wasm": "wasm-pack build --target web --out-dir pkg/web --dev",
     "build:web:remove-gitignore": "rimraf pkg/web/.gitignore",
-    "build:web:replace-placeholders": "cargo run --bin replace-reexports web"
+    "build:web:replace-placeholders": "cargo run --bin replace-reexports web",
+    "doc": "run-s build:tsc build:bundler && rimraf docs && typedoc"
   },
   "devDependencies": {
     "copyfiles": "^2.4.1",
     "npm-run-all2": "^7.0.2",
     "rimraf": "^6.0.1",
+    "typedoc": "^0.27.6",
     "typescript": "^5.7.3"
   }
 }

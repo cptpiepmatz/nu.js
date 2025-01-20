@@ -1,0 +1,9 @@
+{
+  "entryPoints": ["pkg/bundler/nu_js.d.ts"],
+  "out": "docs",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "includeVersion": true,
+  "readme": "none",
+  "tsconfig": "typedoc.tsconfig.json"
+}

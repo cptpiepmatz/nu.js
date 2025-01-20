@@ -2,6 +2,7 @@
 target/
 pkg/
 js/
+docs/
 *.tgz
 
 # Node.js specific

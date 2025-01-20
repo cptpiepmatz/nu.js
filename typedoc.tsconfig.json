@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext"
+  },
+  "files": [
+    "pkg/bundler/nu_js.d.ts"
+  ]
+}
