@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use std::{env, path::PathBuf, fs};
+use std::{env, fs, path::PathBuf};
 
 const REEXPORTS: &'static str = include_str!("./reexports.yml");
 
@@ -11,6 +11,7 @@ struct Reexports {
 mod esm {
     use indoc::indoc;
 
+    #[fmt::skip]
     pub const REPLACER: &'static str = indoc!(r#"
         export function __nu_js__reexport__placeholder() {
             wasm.__nu_js__reexport__placeholder();
@@ -18,7 +19,9 @@ mod esm {
     "#);
 
     pub fn replacement<'s>(with: impl IntoIterator<Item: AsRef<str>>) -> String {
-        let exports = with.into_iter().map(|item| format!("export {{ {} }};", item.as_ref()));
+        let exports = with
+            .into_iter()
+            .map(|item| format!("export {{ {} }};", item.as_ref()));
         itertools::intersperse(exports, "\n".to_string()).collect()
     }
 }
@@ -26,6 +29,7 @@ mod esm {
 mod commonjs {
     use indoc::indoc;
 
+    #[fmt::skip]
     pub const REPLACER: &'static str = indoc!(r#"
         module.exports.__nu_js__reexport__placeholder = function() {
             wasm.__nu_js__reexport__placeholder();
@@ -33,7 +37,9 @@ mod commonjs {
     "#);
 
     pub fn replacement(with: impl IntoIterator<Item: AsRef<str>>) -> String {
-        let exports = with.into_iter().map(|item| format!("module.exports.{item} = {item};", item = item.as_ref()));
+        let exports = with
+            .into_iter()
+            .map(|item| format!("module.exports.{item} = {item};", item = item.as_ref()));
         itertools::intersperse(exports, "\n".to_string()).collect()
     }
 }
@@ -42,7 +48,7 @@ enum PkgKind {
     Bundler,
     Deno,
     Nodejs,
-    Web
+    Web,
 }
 
 impl PkgKind {
@@ -58,14 +64,14 @@ impl PkgKind {
     fn replacer(&self) -> &'static str {
         match self {
             PkgKind::Bundler | PkgKind::Deno | PkgKind::Web => esm::REPLACER,
-            PkgKind::Nodejs => commonjs::REPLACER
+            PkgKind::Nodejs => commonjs::REPLACER,
         }
     }
 
     fn replacement(&self, with: impl IntoIterator<Item: AsRef<str>>) -> String {
         match self {
             PkgKind::Bundler | PkgKind::Deno | PkgKind::Web => esm::replacement(with),
-            PkgKind::Nodejs => commonjs::replacement(with)
+            PkgKind::Nodejs => commonjs::replacement(with),
         }
     }
 }
@@ -78,7 +84,10 @@ fn main() {
         "deno" => PkgKind::Deno,
         "nodejs" => PkgKind::Nodejs,
         "web" => PkgKind::Web,
-        got => panic!("got {got:?}, expected {:?}, {:?}, {:?} or {:?}", "bundler", "deno", "nodejs", "web")
+        got => panic!(
+            "got {got:?}, expected {:?}, {:?}, {:?} or {:?}",
+            "bundler", "deno", "nodejs", "web"
+        ),
     };
 
     let reexports: Reexports = serde_yml::from_str(REEXPORTS).unwrap();
@@ -87,7 +96,9 @@ fn main() {
     let replacement = kind.replacement(reexports.classes);
 
     let content = fs::read_to_string(&path).unwrap();
-    if !content.contains(replacer) { panic!("replacer not found in {}", path.display()) }
+    if !content.contains(replacer) {
+        panic!("replacer not found in {}", path.display())
+    }
     let content = content.replace(replacer, &replacement);
     fs::write(path, content).unwrap();
 }

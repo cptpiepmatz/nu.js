@@ -53,10 +53,12 @@ impl From<NuValue> for Value {
 
 impl Value {
     fn from_record(record: Record) -> Value {
-        let entries: Vec<_> = record.into_iter().map(|(key, value)| JsValue::from(vec![
-            JsValue::from(key),
-            JsValue::from(Value::from(value)),
-        ])).collect();
+        let entries: Vec<_> = record
+            .into_iter()
+            .map(|(key, value)| {
+                JsValue::from(vec![JsValue::from(key), JsValue::from(Value::from(value))])
+            })
+            .collect();
         let entries = JsValue::from(entries);
         let record = js_sys::Object::from_entries(&entries).unwrap();
         Value::Record(record)

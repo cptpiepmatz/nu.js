@@ -1,19 +1,19 @@
-use wasm_bindgen::prelude::*;
 use console_error_panic_hook;
-use serde::{Serialize, Deserialize};
-use tsify_next::Tsify;
-use nu_protocol::Value as NuValue;
 use log::*;
+use nu_protocol::Value as NuValue;
+use serde::{Deserialize, Serialize};
+use tsify_next::Tsify;
+use wasm_bindgen::prelude::*;
 
 mod engine_state;
+mod error;
 mod stack;
 mod value;
-mod error;
 
 pub use engine_state::*;
+pub use error::*;
 pub use stack::*;
 pub use value::*;
-pub use error::*;
 
 #[wasm_bindgen(start)]
 pub fn start() {
@@ -35,21 +35,20 @@ pub struct ExecuteOptions {
 
 #[allow(unused)]
 /// Some docs.
-/// 
+///
 /// @throws {TryFromValueError} - Thrown if the passed input type does not adhere to {@link Value}'s definition.
 /// @throws {NuJsError}
 #[wasm_bindgen]
 pub fn execute(
-    code: &str, 
-    #[wasm_bindgen(js_name = "engineState")]
-    engine_state: &mut EngineState, 
+    code: &str,
+    #[wasm_bindgen(js_name = "engineState")] engine_state: &mut EngineState,
     stack: &mut Stack,
-    #[wasm_bindgen(unchecked_param_type = "ExecuteOptions | undefined")]
-    options: JsValue,
+    #[wasm_bindgen(unchecked_param_type = "ExecuteOptions | undefined")] options: JsValue,
 ) -> Result<Value, NuJsError> {
     let options = match options.is_undefined() {
         true => ExecuteOptions::default(),
-        false => ExecuteOptions::from_js(options).map_err(|_| TryFromValueError::new("dunno".to_string(), js_sys::Object::new()))?
+        false => ExecuteOptions::from_js(options)
+            .map_err(|_| TryFromValueError::new("dunno".to_string(), js_sys::Object::new()))?,
     };
 
     let span = nu_protocol::Span::unknown();
